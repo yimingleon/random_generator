@@ -59,50 +59,56 @@ pdfNormalise=Normalisation*(x(2)-x(1));
 mycdf = cumsum(mypdf)/Normalisation;
 %cumulative add up the probalibity distribution funtion.
 
-if (strcmp(mode_switch,'fast'))
-	tail = length(mycdf);
-	head = 1;
-	flag_t = 0;
-	flag_h = 0;
-	while ((1-mycdf(ceil(tail*3/4))) < 1e-5)
-		if(mycdf(floor(tail*1/4)) < 1e-5)
-			head = floor(tail*1/4);
-			flag_h = 1;
-		end
-		tail = ceil(tail*3/4);
-		flag_t = 1;
-	end
-
-	if(flag_t) 
-		xmax = x(tail);
-		disp(['xmax has been rescaled to ' num2str(xmax)]);
-		mycdf(tail+1:length(mycdf)) = [];
-		mypdf(tail+1:length(mypdf)) = [];
-		x(tail+1:length(x)) = [];
-	end
-
-	if(flag_h) 
-		xmin = x(head);
-		disp(['xmin has been rescaled to ' num2str(xmin)]);
-		mycdf(1:head) = [];
-		mypdf(1:head) = [];
-		x(1:head) = [];
-	end
-	
-	if(flag_t || flag_h)
-		mycdf = mycdf/(mycdf(length(mycdf))-mycdf(head));
-	end
-	
-	x_step = ((xmax-xmin)/nbin);
-	% use interpolation to get the corresponding value for a uniform random number
-	
+tail = length(mycdf);
+head = 1;
+flag_t = 0;
+flag_h = 0;
+while ((mycdf(tail)-mycdf(tail-10)) < 1e-4)
+	tail = tail-10;
+	flag_t = 1;
 end
+
+while(mycdf(head+10)-mycdf(head) < 1e-4)
+	head = head+10;
+	flag_h = 1;
+end
+
+if(flag_t) 
+	xmax = x(tail);
+	disp(['xmax has been rescaled to ' num2str(xmax)]);
+	mycdf(tail+1:length(mycdf)) = [];
+	mypdf(tail+1:length(mypdf)) = [];
+	x(tail+1:length(x)) = [];
+end
+
+if(flag_h) 
+	xmin = x(head);
+	disp(['xmin has been rescaled to ' num2str(xmin)]);
+	mycdf(1:head) = [];
+	mypdf(1:head) = [];
+	x(1:head) = [];
+end
+
+if(flag_t || flag_h)
+	mycdf = mycdf/(mycdf(length(mycdf))-mycdf(1));
+end
+
+x = linspace(xmin,xmax,sample_number);
+mypdf = myfun(x);
+Normalisation = sum(mypdf);
+pdfNormalise=Normalisation*(x(2)-x(1));
+mycdf = cumsum(mypdf)/Normalisation;
+	
+x_step = ((xmax-xmin)/nbin);
+% use interpolation to get the corresponding value for a uniform random number
+	
+%end
 
 onepercent = floor(number/100);
 
-random_vector = x;
-save data.mat
-return 
+%random_vector = x;
+%save data.mat
+%return 
 
 for i=1:number
 	xi = rand;
