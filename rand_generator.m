@@ -2,7 +2,7 @@
 % it can draw n=number random number which follows the PDF of @myfun, range from xmin to xmax.
 % notice that the function @myfun is arbitrary over a constant. It doens't necessarily normalised.
 % Yiming Hu, Feb, 2013
- function [random_vector] = rand_generator(myfun,xmin,xmax,number,mode_switch,vargin)
+ function [random_vector] = rand_generator(myfun,xmin,xmax,number,mode_switch)
 
 % fun is the analytical expression of the function
 % xmin is the lower boundary of the generator
