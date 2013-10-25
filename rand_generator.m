@@ -102,21 +102,7 @@ mycdf = cumsum(mypdf)/Normalisation;
 x_step = ((xmax-xmin)/nbin);
 % use interpolation to get the corresponding value for a uniform random number
 	
-%end
-
-onepercent = floor(number/100);
-
-%random_vector = x;
-%save data.mat
-%return 
-
-for i=1:number
-	xi = rand;
-	random_vector(i)= interp1(mycdf,x,xi,method);
-	if (~mod(i,onepercent))
-		fprintf('=');
-	end
-end
+random_vector = interp1(mycdf,x,rand(1,number),method);
 fprintf('\n');
 [n,xout]=hist(random_vector,xmin+x_step/2:x_step:xmax+x_step/2);
 bar(xout,n/number),hold on
